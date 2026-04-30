@@ -1,0 +1,44 @@
+- name: Fix apt issue
+  shell: sed -i 's/^deb .*jammy-updates/# &/' /etc/apt/sources.list
+
+- name: Update apt
+  apt:
+    update_cache: yes
+
+- name: Install dependencies
+  apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+
+- name: Install Docker
+  apt:
+    name: docker.io
+    state: present
+
+- name: Start Docker
+  shell: dockerd > /dev/null 2>&1 &
+
+- name: Wait Docker
+  pause:
+    seconds: 5
+
+- name: Install UFW
+  apt:
+    name: ufw
+    state: present
+  ignore_errors: yes
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    port: 22
+    proto: tcp
+  ignore_errors: yes
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+  ignore_errors: yes
