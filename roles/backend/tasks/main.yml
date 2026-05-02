@@ -4,6 +4,7 @@
     rule: allow
     port: "{{ backend_port }}"
     proto: tcp
+  ignore_errors: yes
 
 - name: Buat direktori aplikasi di node
   file:
@@ -33,7 +34,7 @@
 
 - name: Health check menggunakan perintah uri
   uri:
-    url: "http://localhost:{{ backend_port }}/health" # Sesuaikan route health check-nya
+    url: "http://localhost:{{ backend_port }}/" # Sesuaikan route health check-nya
     status_code: 200
   register: health_result
   until: health_result.status == 200

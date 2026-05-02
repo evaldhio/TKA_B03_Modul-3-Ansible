@@ -15,3 +15,11 @@ all:
           ansible_port: 2223
           ansible_user: root
           ansible_password: root
+
+    group_backend:
+      hosts:
+        node1:
+
+    group_frontend:
+      hosts:
+        node2:

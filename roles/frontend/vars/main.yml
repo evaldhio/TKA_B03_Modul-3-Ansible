@@ -1,0 +1,5 @@
+---
+# Variabel ini sebagai fallback/dokumentasi
+# Nilai utama diambil dari group_vars/group_frontend.yml
+frontend_port: 8080
+backend_port: 5000

@@ -1,0 +1,48 @@
+---
+- name: Buka port frontend di firewall
+  ufw:
+    rule: allow
+    port: "{{ frontend_port }}"
+    proto: tcp
+  ignore_errors: yes
+
+- name: Buat direktori aplikasi frontend di node
+  file:
+    path: /home/ubuntu/app/frontend
+    state: directory
+    mode: '0755'
+
+- name: Copy index.html ke node
+  copy:
+    src: files/frontend/index.html
+    dest: /home/ubuntu/app/frontend/index.html
+
+- name: Copy Dockerfile frontend ke node
+  copy:
+    src: files/frontend/Dockerfile
+    dest: /home/ubuntu/app/frontend/Dockerfile
+
+- name: Generate config.js dari template
+  template:
+    src: config.js.j2
+    dest: /home/ubuntu/app/frontend/config.js
+
+- name: Generate docker-compose.yml dari template
+  template:
+    src: docker-compose.yml.j2
+    dest: /home/ubuntu/app/frontend/docker-compose.yml
+
+- name: Jalankan frontend dengan Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /home/ubuntu/app/frontend
+    state: present
+    build: always
+
+- name: Health check frontend
+  uri:
+    url: "http://localhost:{{ frontend_port }}"
+    status_code: 200
+  register: health_result
+  until: health_result.status == 200
+  retries: 10
+  delay: 5

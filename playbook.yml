@@ -3,8 +3,14 @@
   roles:
     - docker
 
-
 - name: Deploy Backend Service
   hosts: group_backend
+  become: yes
   roles:
     - backend
+
+- name: Deploy Frontend Service
+  hosts: group_frontend
+  become: yes
+  roles:
+    - frontend
