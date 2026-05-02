@@ -288,6 +288,6 @@ Pastikan selalu tambahkan flag `--ask-vault-pass` saat menjalankan perintah Ansi
 
 | Praktikan | NRP | Tugas |
 |---|---|---|
-| Praktikan 1 | - | - |
-| Praktikan 2 | - | Role Backend + Database |
+| Erlangga Valdhio | 5027241030 | setup intial |
+| Ivan Syarifuddin | 5027241045 | Role Backend + Database |
 | Fika Arka Nuriyah | 5027241071 | Role Frontend |
