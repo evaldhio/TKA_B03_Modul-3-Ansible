@@ -1,0 +1,41 @@
+---
+- name: Buka port backend di firewall
+  ufw:
+    rule: allow
+    port: "{{ backend_port }}"
+    proto: tcp
+
+- name: Buat direktori aplikasi di node
+  file:
+    path: /home/ubuntu/app/backend
+    state: directory
+
+- name: Copy source code backend
+  copy:
+    src: files/backend/
+    dest: /home/ubuntu/app/backend/
+
+- name: Deploy file .env dari template
+  template:
+    src: .env.j2
+    dest: /home/ubuntu/app/backend/.env
+
+- name: Deploy docker-compose.yml dari template
+  template:
+    src: docker-compose.yml.j2
+    dest: /home/ubuntu/app/backend/docker-compose.yml
+
+- name: Jalankan backend dengan Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /home/ubuntu/app/backend
+    state: present
+    build: always
+
+- name: Health check menggunakan perintah uri
+  uri:
+    url: "http://localhost:{{ backend_port }}/health" # Sesuaikan route health check-nya
+    status_code: 200
+  register: health_result
+  until: health_result.status == 200
+  retries: 10
+  delay: 5

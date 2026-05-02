@@ -1,0 +1,5 @@
+db_name: "mypostgres_db"
+db_username: "ipan_user"
+backend_port: 5000
+db_password: "{{ vault_db_password }}"
+jwt_secret: "{{ vault_jwt_secret }}"

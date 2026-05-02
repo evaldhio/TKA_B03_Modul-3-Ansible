@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vibe Coded App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+  <main class="container">
+    <article>
+      <header>
+        <hgroup>
+          <h2>Vibe Coded Login Page</h2>
+          <p>Silakan Login atau Registrasi untuk melanjutkan.</p>
+        </hgroup>
+      </header>
+
+      <div>
+        <h3>Registrasi</h3>
+        <form id="registerForm">
+          <input type="text" id="regUsername" placeholder="Username Baru" required>
+          <input type="password" id="regPassword" placeholder="Password Baru" required>
+          <button type="submit" class="secondary">Daftar</button>
+        </form>
+      </div>
+    
+      <div>
+        <h3>Login</h3>
+        <form id="loginForm">
+          <input type="text" id="loginUsername" placeholder="Username" required>
+          <input type="password" id="loginPassword" placeholder="Password" required>
+          <button type="submit">Login</button>
+        </form>
+      </div>
+
+      <footer id="resultMessage" style="text-align: center; color: var(--pico-primary); font-weight: bold;"></footer>
+    </article>
+  </main>
+
+  <!-- Load konfigurasi URL API dari Ansible -->
+  <script src="config.js"></script>
+
+  <script>
+    const resultMsg = document.getElementById('resultMessage');
+
+    // Handle Register
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('regUsername').value;
+      const p = document.getElementById('regPassword').value;
+      
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        resultMsg.innerText = data.message;
+        resultMsg.style.color = res.ok ? 'green' : 'red';
+      } catch (err) {
+        resultMsg.innerText = "Gagal menghubungi server Backend!";
+        resultMsg.style.color = 'red';
+      }
+    });
+
+    // Handle Login
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const u = document.getElementById('loginUsername').value;
+      const p = document.getElementById('loginPassword').value;
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username: u, password: p })
+        });
+        const data = await res.json();
+        if(res.ok) {
+          resultMsg.innerText = `${data.message} (Token: ${data.token})`;
+          resultMsg.style.color = 'green';
+        } else {
+          resultMsg.innerText = data.message;
+          resultMsg.style.color = 'red';
+        }
+      } catch (err) {
+        resultMsg.innerText = "Gagal menghubungi server Backend!";
+        resultMsg.style.color = 'red';
+      }
+    });
+  </script>
+</body>
+</html>
