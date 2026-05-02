@@ -2,3 +2,9 @@
   become: yes
   roles:
     - docker
+
+
+- name: Deploy Backend Service
+  hosts: group_backend
+  roles:
+    - backend
